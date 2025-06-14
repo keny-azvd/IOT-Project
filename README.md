@@ -65,7 +65,7 @@ Other containers on the same net-esp network can access MongoDB using the contai
 
 You can access MongoDB from your computer or local scripts using localhost:27017 or ip_of_your_pc:27017.
 
-### 3. ERun the Consumer
+### 3. Run the Consumer
 
 Navigate to the consumer folder.
 
