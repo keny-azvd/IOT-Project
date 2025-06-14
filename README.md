@@ -5,19 +5,19 @@ This repository contains the Cloud USP - Smart Irrigation System, a comprehensiv
 
 The project leverages a distributed architecture combining:
 
-    - IoT devices (ESP32 microcontrollers + DHT11 sensors) for real-time environmental data acquisition (temperature, humidity, etc.).
+- IoT devices (ESP32 microcontrollers + DHT11 sensors) for real-time environmental data acquisition (temperature, humidity, etc.).
 
-    - MQTT (via Mosquitto Broker) for lightweight and efficient communication between field devices and the cloud.
+- MQTT (via Mosquitto Broker) for lightweight and efficient communication between field devices and the cloud.
 
-    - Apache Kafka for high-throughput, fault-tolerant, and scalable data streaming between backend services. 
+- Apache Kafka for high-throughput, fault-tolerant, and scalable data streaming between backend services. 
 
-    - MongoDB for flexible NoSQL data storage of both sensor data and external weather information.
+- MongoDB for flexible NoSQL data storage of both sensor data and external weather information.
 
-    - Python-based microservices, including a Kafka consumer that ingests data from the OpenWeather API, providing real-time weather forecasts.
+- Python-based microservices, including a Kafka consumer that ingests data from the OpenWeather API, providing real-time weather forecasts.
 
-    - React-based Frontend (using the Mantis Admin Template) for intuitive visualization of environmental metrics and remote control of field devices (like irrigation pumps).
+- React-based Frontend (using the Mantis Admin Template) for intuitive visualization of environmental metrics and remote control of field devices (like irrigation pumps).
 
-    - Docker and Docker Compose for containerized deployment and orchestration of all backend services.
+- Docker and Docker Compose for containerized deployment and orchestration of all backend services.
 
 This architecture enables farmers and operators to monitor real-time field conditions, analyze weather patterns, and remotely control irrigation systems via a web interface — all with an emphasis on scalability, low-cost deployment, and efficient resource usage.
 
