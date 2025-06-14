@@ -37,28 +37,14 @@ The system enables:
 ### Weather Data Visualization:
 
 *Example:*  
-![Weather Chart](./docs/img/grafico_meteorologico.png)
-
----
-
-### 🖥Actuator Control:
-
-*Example:*  
-![Actuator Control](./docs/img/controle_atuadores.png)
+![Weather Data Visualization](./images/dados_metoroloficos.PNG)
 
 ---
 
 ### Per-Device Monitoring:
 
 *Example:*  
-![MCU Monitoring](./docs/img/dados_mcus.png)
-
----
-
-### ESP32 Circuit Example:
-
-*Example:*  
-![ESP32 Circuit](./docs/img/circuito_esp32.png)
+![Per-Device Monitoring](./images/img/dados-esp.PNG)
 
 ---
 
