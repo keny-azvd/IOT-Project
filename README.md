@@ -18,9 +18,8 @@ The system enables:
 
 ## System Architecture
 
-![System Architecture](./images/projeto_cloud.png)
+![System Architecture](./images/projeto_cloud.drawio (4).png)
 
-```
 
 ### Main Components:
 
