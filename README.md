@@ -1,83 +1,83 @@
 
 # 🌱 Cloud USP - Smart Irrigation System (IoT + Kafka + ESP32 + React)
 
-Este é o repositório do **Cloud USP - Smart Irrigation System**, um projeto de **agricultura de precisão** que integra **IoT (ESP32 + sensores DHT11)**, **Cloud Computing**, **Kafka**, **MQTT**, **MongoDB**, **Python**, **React**, e **Docker**.
+This is the repository for the **Cloud USP - Smart Irrigation System**, a **precision agriculture** project integrating **IoT (ESP32 + DHT11 sensors)**, **Cloud Computing**, **Kafka**, **MQTT**, **MongoDB**, **Python**, **React**, and **Docker**.
 
 ---
 
-## 📌 Visão Geral
+## Overview
 
-O sistema permite:
+The system enables:
 
-- Monitorar **variáveis ambientais em tempo real** (temperatura, umidade, vento, etc).
-- Integrar previsões da **OpenWeather API** com dados locais.
-- **Controlar remotamente** dispositivos de irrigação.
-- Exibir dados e gráficos em uma **interface web responsiva**.
+- Real-time monitoring of **environmental variables** (temperature, humidity, wind speed, etc).
+- Integration of **OpenWeather API** forecasts with local sensor data.
+- **Remote control** of irrigation devices.
+- Visualization of data and charts in a **responsive web interface**.
 
 ---
 
-## 🧱 Arquitetura
+## System Architecture
 
 ```plaintext
-[Sensores ESP32] → [Mosquitto MQTT Broker] → [Cloud Backend] → [Kafka] → [MongoDB] → [Frontend (React)]
+[ESP32 Sensors] → [Mosquitto MQTT Broker] → [Cloud Backend] → [Kafka] → [MongoDB] → [Frontend (React)]
                              ↑                                                    ↓
-                    [Comandos via UI] ←-------------------------------------- [Usuário Web]
+                    [UI Commands] ←-------------------------------------- [Web User]
 ```
 
-### Componentes principais:
+### Main Components:
 
-- **ESP32:** Leitura de sensores e execução de comandos.
-- **MQTT (Mosquitto):** Comunicação entre dispositivos e backend.
-- **Kafka:** Pipeline de mensagens internas.
-- **MongoDB:** Persistência de dados.
-- **Backend (Python + Docker):** Processamento de mensagens e integração com o banco.
-- **Frontend (React + Mantis Template):** Visualização de dados e controle dos dispositivos.
-- **OpenWeather API:** Dados climáticos externos.
-
----
-
-## 📷 Exemplos Visuais (Screenshots)
-
-### 📊 Gráficos Meteorológicos:
-
-*Exemplo:*  
-![Gráfico Meteorológico](./docs/img/grafico_meteorologico.png)
+- **ESP32:** Sensor data acquisition and actuator control.
+- **MQTT (Mosquitto):** Communication between devices and backend.
+- **Kafka:** Internal asynchronous messaging pipeline.
+- **MongoDB:** Data persistence.
+- **Backend (Python + Docker):** Message processing and database integration.
+- **Frontend (React + Mantis Template):** Data visualization and device control UI.
+- **OpenWeather API:** External weather data source.
 
 ---
 
-### 🖥️ Controle de Atuadores:
+## Example Screenshots
 
-*Exemplo:*  
-![Controle de Atuadores](./docs/img/controle_atuadores.png)
+### Weather Data Visualization:
 
----
-
-### 📡 Monitoramento por Dispositivo:
-
-*Exemplo:*  
-![Visualização MCU](./docs/img/dados_mcus.png)
+*Example:*  
+![Weather Chart](./docs/img/grafico_meteorologico.png)
 
 ---
 
-### 🔌 Circuito com ESP32:
+### 🖥Actuator Control:
 
-*Exemplo:*  
-![Circuito ESP32](./docs/img/circuito_esp32.png)
+*Example:*  
+![Actuator Control](./docs/img/controle_atuadores.png)
 
 ---
 
-## 🛠️ Como Configurar e Rodar o Projeto
+### Per-Device Monitoring:
 
-### 1. Configurar o Ambiente Virtual (Python)
+*Example:*  
+![MCU Monitoring](./docs/img/dados_mcus.png)
 
-Navegue até a pasta do **consumer**:
+---
+
+### ESP32 Circuit Example:
+
+*Example:*  
+![ESP32 Circuit](./docs/img/circuito_esp32.png)
+
+---
+
+## Setup and Run Instructions
+
+### 1. Set Up Python Virtual Environment
+
+Navigate to the **consumer** directory:
 
 ```bash
 cd consumer
 python -m venv venv
 ```
 
-Ative o ambiente virtual:
+Activate the virtual environment:
 
 - **Windows:**
 ```bash
@@ -88,7 +88,7 @@ Ative o ambiente virtual:
 source venv/bin/activate
 ```
 
-Instale as dependências:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -96,14 +96,14 @@ pip install -r requirements.txt
 
 ---
 
-### 2. Subir os Containers Docker (Kafka, MongoDB, etc.)
+### 2. Start Docker Containers (Kafka, MongoDB, etc.)
 
-Nos diretórios:
+In the following directories:
 
 - `..\cloud\kafka\`
 - `..\cloud\producer\`
 
-Execute:
+Run:
 
 ```bash
 docker-compose up
@@ -111,15 +111,15 @@ docker-compose up
 
 ---
 
-### 3. Build e Rodar o Consumer (OpenWeather Consumer)
+### 3. Build and Run the Consumer (OpenWeather Consumer)
 
-No diretório `consumer`:
+In the `consumer` directory:
 
 ```bash
 docker build -t consumer_open_weather .
 ```
 
-Execute o container:
+Run the container:
 
 ```bash
 docker run --name consumer_open_weather --network net-esp -p 9005:9005 -d consumer_open_weather
@@ -127,22 +127,22 @@ docker run --name consumer_open_weather --network net-esp -p 9005:9005 -d consum
 
 ---
 
-### 4. Subir o MongoDB
+### 4. Run MongoDB
 
 ```bash
 docker run --name mongo-esp --network net-esp -p 27017:27017 -d mongodb/mongodb-community-server:latest
 ```
 
-**Explicação rápida:**
+**Quick Explanation:**
 
-- `--name mongo-esp`: Nome do container.
-- `--network net-esp`: Rede interna de containers.
-- `-p 27017:27017`: Expõe a porta do MongoDB.
-- `mongodb/mongodb-community-server:latest`: Imagem do MongoDB.
+- `--name mongo-esp`: Container name.
+- `--network net-esp`: Internal Docker network.
+- `-p 27017:27017`: Exposes MongoDB port.
+- `mongodb/mongodb-community-server:latest`: MongoDB image.
 
 ---
 
-### 5. Executar o Consumer Manualmente (se preferir fora do Docker)
+### 5. Run the Consumer Manually (Optional)
 
 ```bash
 cd consumer
@@ -151,18 +151,18 @@ python main.py
 
 ---
 
-### 6. Deploy do Backend / Frontend
+### 6. Deploy Backend / Frontend
 
-- **Backend:** Rodar os serviços (ex: Node.js ou Python) com acesso ao Kafka e MongoDB.
-- **Frontend:** React (Template Mantis) → acessar via navegador:
+- **Backend:** Run backend services (Node.js or Python) with access to Kafka and MongoDB.
+- **Frontend:** React (Mantis Template) → Access via browser:
 
-Se estiver local:
+If running locally:
 
 ```
 http://localhost:5082/
 ```
 
-Se estiver no servidor da USP:
+If deployed on USP server:
 
 ```
 http://andromeda.lasdpc.icmc.usp.br:5082/
@@ -170,18 +170,18 @@ http://andromeda.lasdpc.icmc.usp.br:5082/
 
 ---
 
-## ✅ Funcionalidades Testadas
+## ✅ Tested Functionalities
 
-- Coleta de dados em tempo real com ESP32 + MQTT.
-- Pipeline de dados com Kafka.
-- Persistência de dados no MongoDB.
-- Integração com OpenWeather API.
-- Visualização de gráficos via Frontend.
-- Controle remoto de dispositivos de campo.
+- Real-time data collection from ESP32 + MQTT.
+- Kafka data pipeline.
+- Data persistence in MongoDB.
+- OpenWeather API integration.
+- Real-time chart visualization via Frontend.
+- Remote device control from web interface.
 
 ---
 
-## 📂 Estrutura do Repositório
+## 📂 Repository Structure
 
 ```plaintext
 gcloudpos03/
@@ -200,28 +200,28 @@ gcloudpos03/
 
 ---
 
-## 📈 Resultados
+## 📈 Results
 
-- Visualização em tempo real de variáveis ambientais.
-- Controle remoto de irrigação.
-- Redução de desperdício de água.
-- Suporte a múltiplos ESP32 conectados.
+- Real-time visualization of environmental variables.
+- Remote irrigation control.
+- Water waste reduction.
+- Multi-ESP32 support.
 
 ---
 
-## 🧪 Requisitos
+## 🧪 Requirements
 
 - **Docker + Docker Compose**
 - **Python 3.x**
-- **Node.js (para backend/frontend se aplicável)**
-- **Placa ESP32**
-- **Broker MQTT ativo**
-- **Kafka + Zookeeper ativos**
-- **MongoDB ativo**
+- **Node.js (for backend/frontend if applicable)**
+- **ESP32 Board**
+- **Running MQTT Broker**
+- **Running Kafka + Zookeeper**
+- **Running MongoDB**
 
 ---
 
-## 📚 Referências Técnicas
+## 📚 Technical References
 
 - OpenWeather API
 - Apache Kafka
@@ -231,11 +231,11 @@ gcloudpos03/
 
 ---
 
-## ✅ Link para o Projeto
+## ✅ Project Link
 
 https://github.com/ICMC-SSC5973-2024/gcloudpos03
 
 ---
 
-**Contribuições são bem-vindas!**  
-Faça um fork, abra um PR ou reporte issues.
+**Contributions are welcome!**  
+Fork the project, open a PR, or report issues.
