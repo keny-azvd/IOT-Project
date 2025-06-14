@@ -44,7 +44,7 @@ The system enables:
 ### Per-Device Monitoring:
 
 *Example:*  
-![Per-Device Monitoring](./images/img/dados-esp.PNG)
+![Per-Device Monitoring](./images/dados-esp.PNG)
 
 ---
 
