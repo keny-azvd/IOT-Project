@@ -18,10 +18,8 @@ The system enables:
 
 ## System Architecture
 
-```plaintext
-[ESP32 Sensors] → [Mosquitto MQTT Broker] → [Cloud Backend] → [Kafka] → [MongoDB] → [Frontend (React)]
-                             ↑                                                    ↓
-                    [UI Commands] ←-------------------------------------- [Web User]
+![System Architecture](./images/projeto_cloud.png)
+
 ```
 
 ### Main Components:
