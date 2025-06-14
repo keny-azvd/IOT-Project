@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  sevice:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka_kafka1_1:19091
+    networks:
+      - net-esp
+
+networks:
+  net-esp:
+    name: net-esp
+    external: true

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fa;
+      color: #333;
+    }
+
+    /* Tabs Styles */
+    .tabs {
+      display: flex;
+      justify-content: flex-start;
+      background-color: #2c3e50;
+      padding: 0 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .tabs a {
+      margin-right: 30px;
+      padding: 15px 25px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 5px 5px 0 0;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .tabs a:hover {
+      background-color: #34495e;
+      transform: scale(1.05);
+    }
+
+    .tabs a.active {
+      background-color: #3498db;
+      border-bottom: 4px solid #fff;
+    }
+
+    /* General Content Styles */
+    #content {
+      padding: 20px;
+      background-color: #ecf0f1;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+
+    #my_bars, #my_scatterplots {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px;
+      flex-wrap: wrap;
+    }
+
+    svg {
+      border: 1px solid #ddd;
+      margin: 10px;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      transition: box-shadow 0.3s;
+    }
+
+    svg:hover {
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Containers Page Styling */
+    h2 {
+      font-size: 24px;
+      color: #34495e;
+      margin-top: 0;
+    }
+
+    p {
+      color: #7f8c8d;
+      font-size: 18px;
+    }
+
+    /* Button transitions */
+    button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    /* Modal Styling */
+    #addEspModal, #deleteEspModal, #comEspModal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      width: 300px;
+      z-index: 1000;
+    }
+
+    #addEspModal.active, #deleteEspModal.active {
+      display: block;
+    }
+
+    /* Overlay */
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+    }
+
+    #overlay.active {
+      display: block;
+    }
+
+    /* Input Fields in Modals */
+    label {
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+      /* Estilos do contêiner dos cartões */
+.espCards {
+    display: flex; /* Habilita o flexbox */
+    flex-wrap: wrap; /* Permite que os cartões se movam para a próxima linha se necessário */
+    gap: 10px; /* Espaçamento entre os cartões */
+}
+
+/* Estilos principais do cartão */
+.microcontroller-card {
+    width: 200px;
+    height: 300px;
+    perspective: 1000px;
+    margin: 10px;
+    border: 4px solid #3498db; /* Borda verde inicialmente */
+    border-radius: 8px;
+    transition: border-color 0.6s;
+}
+
+.microcontroller-card.flipped {
+    border-color: #bdc3c7; /* Borda cinza após o flip */
+}
+
+/* Estilo interno do cartão */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.microcontroller-card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* Estilos para o lado frontal */
+.card-front {
+    background-color: white;
+    color: black;
+}
+
+/* Estilo para a imagem no lado frontal */
+.card-front img {
+    max-width: 80%; /* Limita a largura a 80% do cartão */
+    max-height: 60%; /* Limita a altura a 60% do cartão */
+    object-fit: contain; /* Garante que a imagem seja redimensionada para caber sem distorção */
+    margin-bottom: 10px; /* Espaço entre a imagem e o texto */
+}
+
+/* Estilos para o lado traseiro */
+.card-back {
+    background-color: white;
+    color: black;
+    transform: rotateY(180deg);
+}
+
+/* Estilo para a imagem no lado traseira */
+.card-back img {
+    max-width: 80%; /* Limita a largura a 80% do cartão */
+    max-height: 60%; /* Limita a altura a 60% do cartão */
+    object-fit: contain; /* Garante que a imagem seja redimensionada para caber sem distorção */
+    margin-bottom: 10px; /* Espaço entre a imagem e o texto */
+}
+
+  /* Estilo do dropdown */
+  .styled-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    appearance: none; /* Remove o estilo padrão */
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+  }
+
+  </style>
+</head>
+<body>
+
+
+<!-- Tabs at the top -->
+<div class="tabs">
+  <a href="#" id="bars-tab" class="active">Bars</a>
+  <a href="#" id="microcontrollers-tab">Microcontrollers</a>
+  <a href="#" id="containers-infra-tab">Containers Infra</a>
+</div>
+
+<!-- Main content area -->
+<div id="content">
+  <!-- Bars section with Load Data button -->
+  <div id="bars-content" class="tab-content active">
+    <div id="my_bars"></div>
+    <div id="my_scatterplots"></div>
+    <button id="loadButton">Load Data</button>
+    <div id="dataDisplay"></div>
+  </div>
+
+  <!-- Microcontrollers section with Add/Delete ESP buttons -->
+  <div id="microcontrollers-content" class="tab-content">
+    <h2>Microcontrollers</h2>
+    <button id="addEspButton">Add ESP</button>
+    <button id="deleteEspButton">Delete ESP</button>
+    <button id="comEspButton">Command ESP</button>
+    <div id="espCards" class="espCards"></div>
+  </div>
+
+  <!-- Containers Infra section -->
+  <div id="containers-infra-content" class="tab-content">
+    <h2>Containers Infrastructure</h2>
+    <p>This section will be developed for managing containers and infra-related details.</p>
+  </div>
+</div>
+
+<!-- Add ESP Modal -->
+<div id="addEspModal" style="display: none;">
+  <h3>Add ESP</h3>
+  <label for="espName">Name:</label>
+  <input type="text" id="espName"><br>
+  <label for="espId">ID:</label>
+  <input type="text" id="espId"><br>
+  <label for="espLocation">Location:</label>
+  <input type="text" id="espLocation"><br>
+  <button id="saveEspButton">Save ESP</button>
+  <button onclick="document.getElementById('addEspModal').style.display='none'">Cancel</button>
+</div>
+
+<!-- Delete ESP Modal -->
+<div id="deleteEspModal" style="display: none;">
+  <h3>Delete ESP</h3>
+  <label for="deleteEspId">Enter ESP ID to Delete:</label>
+  <input type="text" id="deleteEspId"><br>
+  <button id="confirmDeleteEspButton">Delete</button>
+  <button onclick="document.getElementById('deleteEspModal').style.display='none'">Cancel</button>
+</div>
+
+
+<!-- Modal de Comando ESP -->
+<div id="comEspModal" style="display: none;">
+  <h3>Command ESP</h3>
+
+  <!-- Campo para ESP ID -->
+  <label for="espId">ESP ID:</label>
+  <input type="text" id="espId" placeholder="Enter ESP ID"><br>
+
+  <!-- Campo para Actuator ID -->
+  <label for="actuatorId">Actuator ID:</label>
+  <input type="text" id="actuatorId" placeholder="Enter Actuator ID"><br>
+
+  <!-- Dropdown para o comando (Status) -->
+  <label for="espStatus">Command:</label>
+  <select id="espStatus" class="styled-select">
+    <option value="active">Active</option>
+    <option value="deactive">Deactive</option>
+  </select><br>
+
+  <!-- Botões de ação -->
+  <button id="comEspButton">Send ESP</button>
+  <button onclick="document.getElementById('comEspModal').style.display='none'">Cancel</button>
+</div>
+
+
+<script src="https://d3js.org/d3.v4.js"></script>
+
+  
+  <script>
+   document.getElementById("loadButton").addEventListener("click", async function() {
+  try {
+    const response = await fetch("http://andromeda.lasdpc.icmc.usp.br:7082/weather/all");
+   
+      
+    // Verifica se a resposta é bem-sucedida
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Abaixo, vamos filtrar os dados necessários, com verificações
+    const weatherData = data.map(item => {
+            // Certifique-se de que 'main' está presente
+            if (item.main) {
+                return {
+                    temp: item.main.temp, // Temperatura
+                    humidity: item.main.humidity, // Umidade
+                    visibility: item.visibility || "N/A", // Visibilidade, se não disponível use "N/A"
+                    pressure: item.main.pressure, // Pressão
+                    windSpeed: item.wind ? item.wind.speed : "N/A" // Velocidade do vento, se não disponível use "N/A"
+                };
+            } else {
+                // Retorne um objeto padrão ou uma mensagem de erro se 'main' não estiver disponível
+                return {
+                    temp: null,
+                    humidity: null,
+                    visibility: "N/A",
+                    pressure: null,
+                    windSpeed: "N/A",
+                    error: "Main data not available"
+                };
+            }
+        });
+
+
+    console.log(weatherData);
+    
+  } catch (error) {
+    console.error("Error loading data:", error);
+  }
+});
+
+
+document.getElementById("addEspButton").addEventListener("click", function() {
+  document.getElementById("addEspModal").style.display = "block";
+});
+
+// Handle Save ESP button in Add ESP Modal
+document.getElementById("saveEspButton").addEventListener("click", async function() {
+  const name = document.getElementById("espName").value;
+  const id = document.getElementById("espId").value;
+  const location = document.getElementById("espLocation").value;
+
+  try {
+    const response = await fetch("http://andromeda.lasdpc.icmc.usp.br:7082/mcu", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, id, location })
+    });
+    if (response.ok) alert("ESP added successfully from Front syde");
+    document.getElementById("addEspModal").style.display = "none";
+  } catch (error) {
+    console.error("Error adding ESP:", error);
+  }
+});
+
+// Open Delete ESP Modal
+document.getElementById("deleteEspButton").addEventListener("click", function() {
+  document.getElementById("deleteEspModal").style.display = "block";
+});
+
+// Handle Delete ESP button in Delete ESP Modal
+document.getElementById("confirmDeleteEspButton").addEventListener("click", async function() {
+  const id = document.getElementById("deleteEspId").value;
+
+  try {
+    const response = await fetch(`http://andromeda.lasdpc.icmc.usp.br:7082/mcu/${id}`, {
+      method: "DELETE"
+    });
+    if (response.ok) alert("ESP deleted successfully");
+    document.getElementById("deleteEspModal").style.display = "none";
+  } catch (error) {
+    console.error("Error deleting ESP:", error);
+  }
+});
+
+
+// Open Delete ESP Modal
+document.getElementById("comEspButton").addEventListener("click", function() {
+  document.getElementById("comEspModal").style.display = "block";
+});
+
+
+// Handle Delete ESP button in Command ESP Modal
+document.getElementById("comEspButton").addEventListener("click", async function() {
+  // Coleta os valores dos campos de entrada e do dropdown
+  const espId = document.getElementById("espName").value;
+  const actuatorId = document.getElementById("espId").value; // Se for o campo de entrada para o actuatorId
+  const command = document.getElementById("espStatus").value;
+
+  // Monta os dados a serem enviados
+  const data = {
+    esp_id: espId,
+    actuator_id: actuatorId,
+    command: command
+  };
+
+  try {
+    // Envia os dados usando fetch com o método POST
+    const response = await fetch("http://andromeda.lasdpc.icmc.usp.br:7082/command/esp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    // Verifica se a requisição foi bem-sucedida
+    if (response.ok) {
+      alert("Comando enviado com sucesso!");
+    } else {
+      alert("Erro ao enviar o comando.");
+    }
+  } catch (error) {
+    console.error("Erro:", error);
+    alert("Erro ao enviar o comando.");
+  }
+
+  // Fecha o modal após enviar o comando
+  document.getElementById("comEspModal").style.display = "none";
+});
+
+
+  </script>
+
+  
+<script>
+ // Função para carregar ESPs e criar os cards
+
+ async function loadEsps() {
+  try {
+    const response = await fetch("http://andromeda.lasdpc.icmc.usp.br:7082/mcu/all");  // Atualize o endpoint conforme necessário
+    const esps = await response.json();
+
+    const espCardsContainer = document.getElementById("espCards");
+    espCardsContainer.innerHTML = "";  // Limpa o conteúdo existente
+
+    esps.forEach(esp => {
+      const card = document.createElement("div");
+      card.classList.add("microcontroller-card");
+      card.setAttribute("onclick", "this.classList.toggle('flipped');"); // Adiciona o evento de flip
+
+      // Estrutura do cartão com card-inner, card-front e card-back
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-side card-front">
+            <img src="https://d229kd5ey79jzj.cloudfront.net/1013/images/1013_1_X.png?20241031152229" alt="Imagem da ESP32"> <!-- Imagem da ESP32 -->
+            <h3>${esp.name}</h3>
+            <p>ID: erw </p>
+            <p>Location: re </p>
+          </div>
+          <div class="card-side card-back">
+           <img src="https://d229kd5ey79jzj.cloudfront.net/1013/images/1013_1_X.png?20241031152229" alt="Imagem da ESP32"> <!-- Imagem da ESP32 -->
+            <h3>${esp.name}</h3>
+            <p>ID: erw </p>
+            <p>Location: re </p>
+          </div>
+        </div>
+      `;
+      
+      espCardsContainer.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Error loading ESPs:", error);
+  }
+}
+  
+  
+  // Clique na aba para carregar ESPs e ativar o conteúdo da aba
+  document.getElementById('microcontrollers-tab').addEventListener('click', function() {
+    document.getElementById('bars-content').classList.remove('active');
+    document.getElementById('microcontrollers-content').classList.add('active');
+    document.getElementById('containers-infra-content').classList.remove('active');
+    this.classList.add('active');
+    document.getElementById('bars-tab').classList.remove('active');
+    document.getElementById('containers-infra-tab').classList.remove('active');
+    loadEsps();  // Carrega os ESPs quando a aba Microcontrollers é acessada
+  }); 
+  
+  </script>
+  
+
+
+
+<script>
+// Set the dimensions for the graphs
+var margin = {top: 30, right: 30, bottom: 70, left: 60},
+    width = 400 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+// Function to create an individual bar chart
+function createBarChart(selector, metric, color) {
+  var svg = d3.select(selector)
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleBand().range([0, width]).padding(0.2);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")");
+
+  var yAxis = svg.append("g");
+
+  function update(data) {
+    x.domain([metric]);
+    xAxis.call(d3.axisBottom(x));
+
+    y.domain([0, d3.max(data, function(d) { return d.value; })]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+    var bars = svg.selectAll("rect").data(data);
+
+    bars.enter().append("rect")
+      .merge(bars)
+      .transition().duration(1000)
+      .attr("x", function(d) { return x(metric); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.value); })
+      .attr("fill", color);
+
+    bars.exit().remove();
+  }
+
+  return update;
+}
+
+// Função para criar um scatter plot individual com até 10 pontos
+function createScatterPlot(selector, metric, color) {
+  var svg = d3.select(selector)
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleTime().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")");
+
+  var yAxis = svg.append("g");
+
+  // Array para armazenar as últimas 10 ocorrências de dados
+  let recentData = [];
+
+  function update(newData) {
+    // Converte `timestamp` e `value` para números e verifica se são válidos
+    newData.timestamp = Number(newData.timestamp);
+    newData.value = Number(newData.value);
+
+    // Adiciona os novos dados ao array se forem válidos
+    if (!isNaN(newData.value) && !isNaN(newData.timestamp)) {
+        recentData.push(newData);
+    }
+
+    // Mantém apenas as últimas 10 entradas
+    if (recentData.length > 10) {
+        recentData.shift();
+    }
+
+    // Verifica se recentData tem entradas válidas
+    if (recentData.length === 0) return; // Sai da função se não houver dados
+
+    // Atualiza o domínio dos eixos com os novos dados limitados a 10 entradas
+    x.domain(d3.extent(recentData, function(d) { return d.timestamp; }));
+    xAxis.call(d3.axisBottom(x));
+
+    y.domain([0, d3.max(recentData, function(d) { return d.value; })]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+    // Seleciona e atualiza os pontos
+    var dots = svg.selectAll("circle").data(recentData);
+
+    dots.enter().append("circle")
+      .merge(dots)
+      .transition().duration(1000)
+      .attr("cx", function(d) { return x(d.timestamp); })
+      .attr("cy", function(d) { return y(d.value); })
+      .attr("r", 5)
+      .attr("fill", color);
+
+    dots.exit().remove();
+  }
+
+  return update;
+}
+
+// Create bar charts and scatter plots for each metric
+var temperatureBar = createBarChart("#my_bars", "Temperature", "#ff6347");
+var humidityBar = createBarChart("#my_bars", "Humidity", "#4682b4");
+var waterLevelBar = createBarChart("#my_bars", "Water Level", "#32cd32");
+var anotherMetricBar = createBarChart("#my_bars", "Another Metric", "#9370db");
+
+var temperatureScatter = createScatterPlot("#my_scatterplots", "Temperature", "#ff6347");
+var humidityScatter = createScatterPlot("#my_scatterplots", "Humidity", "#4682b4");
+var waterLevelScatter = createScatterPlot("#my_scatterplots", "Water Level", "#32cd32");
+var anotherMetricScatter = createScatterPlot("#my_scatterplots", "Another Metric", "#9370db");
+
+// Function to simulate data fetch from the backend
+async function fetchData() {
+  try {
+    const response = await fetch("http://andromeda.lasdpc.icmc.usp.br:7082/weather/all");
+
+    // Verifica se a resposta é bem-sucedida
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Extrai e estrutura os dados relevantes com timestamps
+    const weatherData = data.map(item => {
+      const d = new Date()
+      if (item.main) {
+        return {
+          temp: item.main.temp,            // Temperatura
+          humidity: item.main.humidity,     // Umidade
+          visibility: item.visibility || "N/A", // Visibilidade
+          pressure: item.main.pressure,     // Pressão
+          windSpeed: item.wind ? item.wind.speed : "N/A", // Velocidade do vento
+          timestamp: d.getMinutes() // Timestamp, usando agora caso não disponível
+        };
+      } else {
+        // Retorno padrão para dados ausentes
+        return {
+          temp: null,
+          humidity: null,
+          visibility: "N/A",
+          pressure: null,
+          windSpeed: "N/A",
+          error: "Main data not available",
+          timestamp: d.getMinutes()
+        };
+      }
+    });
+
+    console.time("WeatherDataProcessing");
+    console.log(weatherData);
+
+    // Atualiza os gráficos com os dados reais do endpoint
+    weatherData.forEach(entry => {
+      if (entry.temp !== null) {
+        temperatureBar([{ value: entry.temp, timestamp: entry.timestamp }]);
+        temperatureScatter([{ category: "Temperature", value: entry.temp, timestamp: entry.timestamp }]);
+      }
+
+      if (entry.humidity !== null) {
+        humidityBar([{ value: entry.humidity, timestamp: entry.timestamp }]);
+        humidityScatter([{ category: "Humidity", value: entry.humidity, timestamp: entry.timestamp }]);
+      }
+
+
+      if (entry.pressure !== null) {
+        waterLevelBar([{ value: entry.pressure, timestamp: entry.timestamp }]);
+        waterLevelScatter([{ category: "Pressure", value: entry.pressure, timestamp: entry.timestamp }]);
+      }
+
+      if (entry.visibility !== "N/A") {
+        anotherMetricBar([{ value: entry.visibility, timestamp: entry.timestamp }]);
+        anotherMetricScatter([{ category: "Visibility", value: entry.visibility, timestamp: entry.timestamp }]);
+      }
+    });
+
+    console.timeEnd("WeatherDataProcessing");
+
+  } catch (error) {
+    console.error("Error loading data:", error);
+  }
+}
+
+// Fetch data initially
+fetchData();
+
+// Set interval to update the data every 5 minutes (300,000 ms)
+setInterval(fetchData, 3000); // 5 minutes
+
+// Tab navigation logic
+document.getElementById('bars-tab').addEventListener('click', function() {
+  document.getElementById('bars-content').classList.add('active');
+  document.getElementById('microcontrollers-content').classList.remove('active');
+  document.getElementById('containers-infra-content').classList.remove('active');
+  this.classList.add('active');
+  document.getElementById('microcontrollers-tab').classList.remove('active');
+  document.getElementById('containers-infra-tab').classList.remove('active');
+});
+
+document.getElementById('microcontrollers-tab').addEventListener('click', function() {
+  document.getElementById('bars-content').classList.remove('active');
+  document.getElementById('microcontrollers-content').classList.add('active');
+  document.getElementById('containers-infra-content').classList.remove('active');
+  this.classList.add('active');
+  document.getElementById('bars-tab').classList.remove('active');
+  document.getElementById('containers-infra-tab').classList.remove('active');
+});
+
+document.getElementById('containers-infra-tab').addEventListener('click', function() {
+  document.getElementById('bars-content').classList.remove('active');
+  document.getElementById('microcontrollers-content').classList.remove('active');
+  document.getElementById('containers-infra-content').classList.add('active');
+  this.classList.add('active');
+  document.getElementById('bars-tab').classList.remove('active');
+  document.getElementById('microcontrollers-tab').classList.remove('active');
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5082:5082"
+    networks:
+      - net-esp 
+networks:
+  net-esp:
+    name: net-esp
+    external: true  # Defina a rede aqui

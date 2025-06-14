@@ -1,0 +1,13 @@
+version: '3.8'  # ou a versão que você preferir
+
+services:
+  mqtt_consumer:
+    build:
+      context: .  # contexto de construção, que é o diretório atual
+      dockerfile: Dockerfile
+    networks:
+      - net-esp  # conectando à rede net-esp
+
+networks:
+  net-esp:
+    external: true  # define que a rede já existe

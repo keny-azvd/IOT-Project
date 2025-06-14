@@ -1,0 +1,18 @@
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: always
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    ports:
+      - "6082:6082"
+      - "9001:9001"
+    networks:
+      - net-esp
+      
+networks:
+  net-esp:
+    driver: bridge
+    attachable: true

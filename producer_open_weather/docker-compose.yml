@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  meu-servico:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      # Variável de ambiente que define o Kafka broker
+      KAFKA_BOOTSTRAP_SERVERS: kafka_kafka1_1:19091
+
+    networks:
+      - net-esp  # Inclua a rede aqui
+
+networks:
+  net-esp:
+    name: net-esp
+    external: true  # Defina a rede aqui
+
