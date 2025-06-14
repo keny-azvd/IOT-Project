@@ -1,16 +1,18 @@
 # Cloud USP
 
-Este é o projeto **Cloud USP**, que utiliza Kafka, Docker e Python para comunicação entre um produtor e um consumidor.
+This is the **Cloud USP** project, which uses Kafka, Docker, and Python for communication between a producer and a consumer.
 
-## Passos para configurar e executar o projeto:
+## Steps to Set Up and Run the Project:
 
-### 1. Configurar o Ambiente Virtual
-1. Navegue até o diretório `consumer`.
-2. Crie um ambiente virtual com o comando:
+### 1. Set Up the Virtual Environment
+1. Navigate to the `consumer` directory.
+2. Create a virtual environment with the following command:
 
    ```bash
-   python -m venv venv 
-Ative o ambiente virtual:
+   python -m venv venv
+
+
+Activate the virtual environment:
 
 Windows:
    .\venv\Scripts\activate
@@ -18,58 +20,61 @@ Windows:
 Linux/Mac:
     source venv/bin/activate 
 
-
-Instale as bibliotecas necessárias:
+Install the required libraries:
      pip install -r requirements.txt
 
-### 2. Executar o Docker Compose
-Nos seguintes diretórios, execute o comando abaixo para inicializar os serviços:
+### 2. Run Docker Compose
+In the following directories, run the command below to initialize the services:
 
 ..\cloud\kafka\
 ..\cloud\producer\
 
-No terminal, navegue até cada pasta e execute:
+In the terminal, navigate to each folder and run:
 
       docker-compose up
 
-Além de fazer o build do consumer 
+Additionally, build the consumer:
 
       docker build -t consumer_open_weather .
+
+Then, run it with:
       
       docker run --name consumer_open_weather --network net-esp -p 9005:9005 -d consumer_open_weather
 
 
-(subir o banco de dados)
+(To start the database)
 
       docker run --name mongo-esp --network net-esp -p 27017:27017 -d mongodb/mongodb-community-server:latest
 
-### Explicação do Comando
---name mongo-esp: Nomeia o contêiner como mongo-esp.
+### Explanation of the Command
+--name mongo-esp: Names the container as mongo-esp.
 
---network net-esp: Executa o contêiner na rede interna chamada net-esp.
+--network net-esp: Runs the container on the internal network called net-esp.
 
--p 27017:27017: Mapeia a porta 27017 do contêiner para a porta 27017 da sua máquina host. Isso permite acesso externo ao MongoDB via localhost:27017 ou ip_do_seu_pc:27017.
--d: Executa o contêiner em segundo plano.
+-p 27017:27017: Maps the container's port 27017 to port 27017 on your host machine. This allows external access to MongoDB via localhost:27017 or ip_of_your_pc:27017.
 
-mongo/mongodb-community-server:latest: A imagem do MongoDB a ser usada.
+mongo/mongodb-community-server:latest: Specifies the MongoDB image to use.
 
 Acesso Interno e Externo
 
-### Acesso Interno: 
+### Internal Access:
 
-Outros contêineres que estão na mesma rede net-esp podem acessar o MongoDB usando o nome do contêiner (mongo-esp).
+Other containers on the same net-esp network can access MongoDB using the container's name (mongo-esp).
 
-### Acesso Externo: 
+### External Access:
 
-Você pode acessar o MongoDB a partir do seu computador ou scripts locais usando localhost:27017 ou ip_do_seu_pc:27017.
+You can access MongoDB from your computer or local scripts using localhost:27017 or ip_of_your_pc:27017.
 
-### 3. Executar o Consumer
-Navegue até a pasta consumer.
+### 3. ERun the Consumer
 
-Execute o script principal:
+Navigate to the consumer folder.
+
+Run the main script:
 
       python main.py
 
-### Observações
-Certifique-se de que o Docker está instalado e em execução na sua máquina.
-O requirements.txt deve conter todas as bibliotecas necessárias para o consumidor.
+### Notes
+
+    Make sure Docker is installed and running on your machine.
+
+    The requirements.txt should contain all the necessary libraries for the consumer.
