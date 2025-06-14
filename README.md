@@ -1,80 +1,241 @@
-# Cloud USP
 
-This is the **Cloud USP** project, which uses Kafka, Docker, and Python for communication between a producer and a consumer.
+# 🌱 Cloud USP - Smart Irrigation System (IoT + Kafka + ESP32 + React)
 
-## Steps to Set Up and Run the Project:
+Este é o repositório do **Cloud USP - Smart Irrigation System**, um projeto de **agricultura de precisão** que integra **IoT (ESP32 + sensores DHT11)**, **Cloud Computing**, **Kafka**, **MQTT**, **MongoDB**, **Python**, **React**, e **Docker**.
 
-### 1. Set Up the Virtual Environment
-1. Navigate to the `consumer` directory.
-2. Create a virtual environment with the following command:
+---
 
-   ```bash
-   python -m venv venv
+## 📌 Visão Geral
 
+O sistema permite:
 
-Activate the virtual environment:
+- Monitorar **variáveis ambientais em tempo real** (temperatura, umidade, vento, etc).
+- Integrar previsões da **OpenWeather API** com dados locais.
+- **Controlar remotamente** dispositivos de irrigação.
+- Exibir dados e gráficos em uma **interface web responsiva**.
 
-Windows:
-   .\venv\Scripts\activate
+---
 
-Linux/Mac:
-    source venv/bin/activate 
+## 🧱 Arquitetura
 
-Install the required libraries:
-     pip install -r requirements.txt
+```plaintext
+[Sensores ESP32] → [Mosquitto MQTT Broker] → [Cloud Backend] → [Kafka] → [MongoDB] → [Frontend (React)]
+                             ↑                                                    ↓
+                    [Comandos via UI] ←-------------------------------------- [Usuário Web]
+```
 
-### 2. Run Docker Compose
-In the following directories, run the command below to initialize the services:
+### Componentes principais:
 
-..\cloud\kafka\
-..\cloud\producer\
+- **ESP32:** Leitura de sensores e execução de comandos.
+- **MQTT (Mosquitto):** Comunicação entre dispositivos e backend.
+- **Kafka:** Pipeline de mensagens internas.
+- **MongoDB:** Persistência de dados.
+- **Backend (Python + Docker):** Processamento de mensagens e integração com o banco.
+- **Frontend (React + Mantis Template):** Visualização de dados e controle dos dispositivos.
+- **OpenWeather API:** Dados climáticos externos.
 
-In the terminal, navigate to each folder and run:
+---
 
-      docker-compose up
+## 📷 Exemplos Visuais (Screenshots)
 
-Additionally, build the consumer:
+### 📊 Gráficos Meteorológicos:
 
-      docker build -t consumer_open_weather .
+*Exemplo:*  
+![Gráfico Meteorológico](./docs/img/grafico_meteorologico.png)
 
-Then, run it with:
-      
-      docker run --name consumer_open_weather --network net-esp -p 9005:9005 -d consumer_open_weather
+---
 
+### 🖥️ Controle de Atuadores:
 
-(To start the database)
+*Exemplo:*  
+![Controle de Atuadores](./docs/img/controle_atuadores.png)
 
-      docker run --name mongo-esp --network net-esp -p 27017:27017 -d mongodb/mongodb-community-server:latest
+---
 
-### Explanation of the Command
---name mongo-esp: Names the container as mongo-esp.
+### 📡 Monitoramento por Dispositivo:
 
---network net-esp: Runs the container on the internal network called net-esp.
+*Exemplo:*  
+![Visualização MCU](./docs/img/dados_mcus.png)
 
--p 27017:27017: Maps the container's port 27017 to port 27017 on your host machine. This allows external access to MongoDB via localhost:27017 or ip_of_your_pc:27017.
+---
 
-mongo/mongodb-community-server:latest: Specifies the MongoDB image to use.
+### 🔌 Circuito com ESP32:
 
-Acesso Interno e Externo
+*Exemplo:*  
+![Circuito ESP32](./docs/img/circuito_esp32.png)
 
-### Internal Access:
+---
 
-Other containers on the same net-esp network can access MongoDB using the container's name (mongo-esp).
+## 🛠️ Como Configurar e Rodar o Projeto
 
-### External Access:
+### 1. Configurar o Ambiente Virtual (Python)
 
-You can access MongoDB from your computer or local scripts using localhost:27017 or ip_of_your_pc:27017.
+Navegue até a pasta do **consumer**:
 
-### 3. Run the Consumer
+```bash
+cd consumer
+python -m venv venv
+```
 
-Navigate to the consumer folder.
+Ative o ambiente virtual:
 
-Run the main script:
+- **Windows:**
+```bash
+.env\Scriptsctivate
+```
+- **Linux/Mac:**
+```bash
+source venv/bin/activate
+```
 
-      python main.py
+Instale as dependências:
 
-### Notes
+```bash
+pip install -r requirements.txt
+```
 
-    Make sure Docker is installed and running on your machine.
+---
 
-    The requirements.txt should contain all the necessary libraries for the consumer.
+### 2. Subir os Containers Docker (Kafka, MongoDB, etc.)
+
+Nos diretórios:
+
+- `..\cloud\kafka\`
+- `..\cloud\producer\`
+
+Execute:
+
+```bash
+docker-compose up
+```
+
+---
+
+### 3. Build e Rodar o Consumer (OpenWeather Consumer)
+
+No diretório `consumer`:
+
+```bash
+docker build -t consumer_open_weather .
+```
+
+Execute o container:
+
+```bash
+docker run --name consumer_open_weather --network net-esp -p 9005:9005 -d consumer_open_weather
+```
+
+---
+
+### 4. Subir o MongoDB
+
+```bash
+docker run --name mongo-esp --network net-esp -p 27017:27017 -d mongodb/mongodb-community-server:latest
+```
+
+**Explicação rápida:**
+
+- `--name mongo-esp`: Nome do container.
+- `--network net-esp`: Rede interna de containers.
+- `-p 27017:27017`: Expõe a porta do MongoDB.
+- `mongodb/mongodb-community-server:latest`: Imagem do MongoDB.
+
+---
+
+### 5. Executar o Consumer Manualmente (se preferir fora do Docker)
+
+```bash
+cd consumer
+python main.py
+```
+
+---
+
+### 6. Deploy do Backend / Frontend
+
+- **Backend:** Rodar os serviços (ex: Node.js ou Python) com acesso ao Kafka e MongoDB.
+- **Frontend:** React (Template Mantis) → acessar via navegador:
+
+Se estiver local:
+
+```
+http://localhost:5082/
+```
+
+Se estiver no servidor da USP:
+
+```
+http://andromeda.lasdpc.icmc.usp.br:5082/
+```
+
+---
+
+## ✅ Funcionalidades Testadas
+
+- Coleta de dados em tempo real com ESP32 + MQTT.
+- Pipeline de dados com Kafka.
+- Persistência de dados no MongoDB.
+- Integração com OpenWeather API.
+- Visualização de gráficos via Frontend.
+- Controle remoto de dispositivos de campo.
+
+---
+
+## 📂 Estrutura do Repositório
+
+```plaintext
+gcloudpos03/
+├── Backend/
+├── Frontend/
+├── Firmware/
+├── Docker/
+├── Kafka/
+├── MongoDB/
+├── consumer/
+├── docs/
+│   └── img/
+├── README.md
+└── ...
+```
+
+---
+
+## 📈 Resultados
+
+- Visualização em tempo real de variáveis ambientais.
+- Controle remoto de irrigação.
+- Redução de desperdício de água.
+- Suporte a múltiplos ESP32 conectados.
+
+---
+
+## 🧪 Requisitos
+
+- **Docker + Docker Compose**
+- **Python 3.x**
+- **Node.js (para backend/frontend se aplicável)**
+- **Placa ESP32**
+- **Broker MQTT ativo**
+- **Kafka + Zookeeper ativos**
+- **MongoDB ativo**
+
+---
+
+## 📚 Referências Técnicas
+
+- OpenWeather API
+- Apache Kafka
+- Mosquitto MQTT
+- ESP32 Docs
+- Mantis React Template (https://codedthemes.gitbook.io/mantis)
+
+---
+
+## ✅ Link para o Projeto
+
+https://github.com/ICMC-SSC5973-2024/gcloudpos03
+
+---
+
+**Contribuições são bem-vindas!**  
+Faça um fork, abra um PR ou reporte issues.
